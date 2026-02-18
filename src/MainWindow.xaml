@@ -1,0 +1,97 @@
+<Window x:Class="gPad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:gPad"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        mc:Ignorable="d"
+        Title="gPad"
+        Height="450" Width="800"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False"
+        AllowsTransparency="True"
+        Background="Transparent">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="4" CornerRadius="0"/>
+    </shell:WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
+                                BorderThickness="0,0,0,2" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource TabHoverBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="AddTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </Window.Resources>
+    <Border x:Name="RootBorder" Background="{StaticResource WindowBackground}">
+        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tab row: tabs + drag button + new-tab button -->
+        <Border Grid.Row="0" Background="{StaticResource TabBarBackground}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <DockPanel>
+                <Button x:Name="AddTabButton" DockPanel.Dock="Right" Content="+" Style="{StaticResource AddTabButtonStyle}"
+                        Click="AddTabButton_Click" Margin="2,1"/>
+                <Border x:Name="DragButton" DockPanel.Dock="Right" Width="28" Padding="6,4" Background="Transparent"
+                        Cursor="SizeAll" MouseLeftButtonDown="DragButton_MouseLeftButtonDown"
+                        ToolTip="Drag to move window">
+                    <TextBlock Text="⋮⋮" Foreground="{StaticResource TextBrush}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="2,1,0,1"
+                                AllowDrop="True" DragOver="TabStrip_DragOver" Drop="TabStrip_Drop"/>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- Editor -->
+        <TextBox x:Name="Editor" Grid.Row="1"
+                 Background="{StaticResource EditorBackground}"
+                 Foreground="{StaticResource TextBrush}"
+                 CaretBrush="{StaticResource TextBrush}"
+                 BorderThickness="0"
+                 Padding="8"
+                 AcceptsReturn="True"
+                 AcceptsTab="True"
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Auto"
+                 TextWrapping="NoWrap"
+                 VerticalContentAlignment="Top"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 TextChanged="Editor_TextChanged"/>
+
+        <!-- Saved toast (dark mode) -->
+        <Border x:Name="Toast" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                Margin="0,0,0,24" Padding="16,10" Background="#E62D2D2D"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                Visibility="Collapsed" IsHitTestVisible="False">
+            <TextBlock Text="Saved" Foreground="{StaticResource TextBrush}" FontSize="13"/>
+        </Border>
+    </Grid>
+    </Border>
+</Window>
